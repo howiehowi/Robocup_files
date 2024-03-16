@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+#THIS WORK IN ROBOCUP!!!
+import rospy
+from geometry_msgs.msg import PoseStamped
+import tf
+
+
+def euler_to_quaternion(roll, pitch, yaw):
+    # Convert Euler angles (roll, pitch, yaw) to a quaternion
+    quaternion = tf.transformations.quaternion_from_euler(roll, pitch, yaw)
+    return quaternion
+
+
+def publish_pose(x, y, z, roll, pitch, yaw):
+    # Initialize the ROS node
+    rospy.init_node('gripper_pose_publisher', anonymous=True)
+
+    # Create a publisher on the specified topic
+    pub = rospy.Publisher('/cartesian_impedance_example_controller/equilibrium_pose', PoseStamped, queue_size=10)
+
+    # Wait until the publisher is connected to subscribers
+    rospy.sleep(1)
+
+    # Create the PoseStamped message
+    pose_msg = PoseStamped()
+    pose_msg.header.stamp = rospy.Time.now()
+    pose_msg.header.frame_id = 'panda_link0'
+
+    # Set the position of the gripper
+    pose_msg.pose.position.x = x
+    pose_msg.pose.position.y = y
+    pose_msg.pose.position.z = z
+
+    # Convert Euler angles to quaternion for orientation
+    q = euler_to_quaternion(roll, pitch, yaw)
+    pose_msg.pose.orientation.x = q[0]
+    pose_msg.pose.orientation.y = q[1]
+    pose_msg.pose.orientation.z = q[2]
+    pose_msg.pose.orientation.w = q[3]
+
+    # Publish the pose
+    pub.publish(pose_msg)
+    rospy.loginfo("Published gripper pose with Euler angles.")
+
+
+if __name__ == '__main__':
+    # Pose parameters - position
+    x = 0.3#0.32     #0.4
+    y = 0.    #0.52
+    z = 0.3 #-0.1
+
+    # Pose parameters - orientation in Euler angles (radians)
+    roll = -3.14#-3.14#-3.48#-2.8#-3.1415
+    pitch = -0.01 #-0.01 # 90 degrees=1.5708 180 degrees=3.1415
+    yaw = 0       #0
+
+    publish_pose(x, y, z, roll, pitch, yaw)
