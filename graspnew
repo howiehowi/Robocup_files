@@ -1,3 +1,4 @@
+
 import rospy
 import actionlib
 from franka_gripper.msg import GraspAction, GraspGoal
@@ -12,9 +13,11 @@ def grasp_object():
 
     # 创建一个目标（GraspGoal）实例
     goal = GraspGoal()
-    goal.width = 0.073  # 目标抓取宽度，单位为米
+    goal.width = 0.067862
+    #goal.width = 0.065542
+    #goal.width = 0.073  # 目标抓取宽度，单位为米
     goal.speed = 0.1  # 抓取时的速度
-    goal.force = 60  # 抓取时施加的力，单位为牛顿
+    goal.force = 70  # 抓取时施加的力，单位为牛顿
     goal.epsilon.inner = 0.01  # 内公差
     goal.epsilon.outer = 0.01  # 外公差
 
@@ -66,10 +69,11 @@ if __name__ == '__main__':
     if result and result.success:  # 假设GraspAction的结果有一个表示成功的`success`字段
         rospy.loginfo("Grasp successful, moving the arm.")
         # 抓取成功，移动到新位置
-        x = -0.4652  # 0.32
-        y = -0.5  # 0.5
-        z = 0.2  # -0.1
+    x = -0.4652  # 0.32
+    y = -0.5  # 0.5
+    z = 0.2  # -0.1
         # 移动到新的位置
-        publish_pose(x, y, z, roll=-3.14, pitch=-0.01, yaw=0)
-    else:
-        rospy.loginfo("Grasp failed or not fully successful.")
+    publish_pose(x, y, z, roll=-3.14, pitch=-0.01, yaw=0)
+
+
+
